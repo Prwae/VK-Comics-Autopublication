@@ -2,6 +2,7 @@ import requests
 import random
 import os
 from dotenv import load_dotenv
+import logging
 
 
 def download_image(path, params=None):
@@ -103,10 +104,13 @@ if __name__ == "__main__":
     access_token = os.environ["VK_ACCESS_TOKEN"]
     group_id = int(os.environ["VK_GROUP_ID"])
 
-    msg = download_image("comic.jpg")
-    upload_url = get_upload_url(access_token, group_id)
-    uploaded_photo_response = upload_photo(access_token, group_id, "comic.jpg", upload_url)
-    saved_photo_response = save_photo(access_token, group_id, uploaded_photo_response)
-    post_photo(access_token, group_id, saved_photo_response, msg)
-
-    os.remove("comic.jpg")
+    try:
+        msg = download_image("comic.jpg")
+        upload_url = get_upload_url(access_token, group_id)
+        uploaded_photo_response = upload_photo(access_token, group_id, "comic.jpg", upload_url)
+        saved_photo_response = save_photo(access_token, group_id, uploaded_photo_response)
+        post_photo(access_token, group_id, saved_photo_response, msg)
+    except requests.exceptions.HTTPError:
+        logging.exception("Ошибка при запросе к ВК")
+    finally:
+        os.remove("comic.jpg")
