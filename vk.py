@@ -57,7 +57,7 @@ def upload_photo(access_token, group_id, path, upload_url):
         payload["photo"] = file
 
         response = requests.post(upload_url, files=payload)
-        response.raise_for_status()
+    response.raise_for_status()
 
     return response.json()
 
