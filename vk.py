@@ -1,8 +1,9 @@
-import requests
 import random
 import os
-from dotenv import load_dotenv
 import logging
+
+import requests
+from dotenv import load_dotenv
 
 
 def download_image(path, params=None):
