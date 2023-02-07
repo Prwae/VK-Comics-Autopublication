@@ -62,7 +62,7 @@ def upload_photo(access_token, group_id, path, upload_url):
     return response.json()
 
 
-def save_photo(access_token, group_id, uploaded_photo_response):
+def save_photo(access_token, group_id, photo, server, hash):
     payload = {
         "access_token": access_token,
         "v": "5.131",
@@ -80,12 +80,12 @@ def save_photo(access_token, group_id, uploaded_photo_response):
     return response.json()
 
 
-def post_photo(access_token, group_id, saved_photo_response, message="----"):
+def post_photo(access_token, group_id, attachments, message="----"):
     payload = {
         "access_token": access_token,
         "v": "5.131",
         "owner_id": -group_id,
-        "attachments": f"photo{saved_photo_response['response'][0]['owner_id']}_{saved_photo_response['response'][0]['id']}",
+        "attachments": attachments,
         "from_group": 1,
         "message": message
 
@@ -107,9 +107,16 @@ if __name__ == "__main__":
     try:
         msg = download_image("comic.jpg")
         upload_url = get_upload_url(access_token, group_id)
+
         uploaded_photo_response = upload_photo(access_token, group_id, "comic.jpg", upload_url)
-        saved_photo_response = save_photo(access_token, group_id, uploaded_photo_response)
-        post_photo(access_token, group_id, saved_photo_response, msg)
+        photo = uploaded_photo_response["photo"]
+        server = uploaded_photo_response["server"]
+        hash = uploaded_photo_response["hash"]
+
+        saved_photo_response = save_photo(access_token, group_id, photo, server, hash)
+        attachments = f"photo{saved_photo_response['response'][0]['owner_id']}_{saved_photo_response['response'][0]['id']}"
+
+        post_photo(access_token, group_id, attachments, msg)
     except requests.exceptions.HTTPError:
         logging.exception("Ошибка при запросе к ВК")
     finally:
