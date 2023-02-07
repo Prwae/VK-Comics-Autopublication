@@ -16,8 +16,8 @@
 7. Для начала надо создать .env файл в директории программы и поместить туда Access Token и ID группы.
 
     ```
-    ACCESS_TOKEN=*ВАШ ACCESS TOKEN*
-    GROUP_ID=*ID ВАШЕЙ ГРУППЫ*
+    VK_ACCESS_TOKEN=*ВАШ ACCESS TOKEN*
+    VK_GROUP_ID=*ID ВАШЕЙ ГРУППЫ*
     ```
 
 8. Для запуска скрипта используйте команду 
