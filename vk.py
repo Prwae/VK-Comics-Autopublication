@@ -63,14 +63,14 @@ def upload_photo(access_token, group_id, path, upload_url):
     return response.json()
 
 
-def save_photo(access_token, group_id, photo, server, hash):
+def save_photo(access_token, group_id, photo, photo_server, photo_hash):
     payload = {
         "access_token": access_token,
         "v": "5.131",
         "group_id": group_id,
-        "photo": uploaded_photo_response["photo"],
-        "server": uploaded_photo_response["server"],
-        "hash": uploaded_photo_response["hash"]
+        "photo": photo,
+        "server": photo_server,
+        "hash": photo_hash
     }
 
     url = "https://api.vk.com/method/photos.saveWallPhoto"
