@@ -60,7 +60,11 @@ def upload_photo(access_token, group_id, path, upload_url):
         response = requests.post(upload_url, files=payload)
     response.raise_for_status()
 
-    return response.json()
+    uploaded_photo_response = response.json()
+    photo = uploaded_photo_response["photo"]
+    photo_server = uploaded_photo_response["server"]
+    photo_hash = uploaded_photo_response["hash"]
+    return photo, photo_server, photo_hash
 
 
 def save_photo(access_token, group_id, photo, photo_server, photo_hash):
@@ -78,7 +82,10 @@ def save_photo(access_token, group_id, photo, photo_server, photo_hash):
     response = requests.post(url, data=payload)
     response.raise_for_status()
 
-    return response.json()
+    saved_photo_response = response.json()
+    photo_owner_id = saved_photo_response['response'][0]['owner_id']
+    photo_id = saved_photo_response['response'][0]['id']
+    return photo_owner_id, photo_id
 
 
 def post_photo(access_token, group_id, attachments, message="----"):
@@ -97,8 +104,6 @@ def post_photo(access_token, group_id, attachments, message="----"):
     response = requests.post(url, params=payload)
     response.raise_for_status()
 
-    return response.json()
-
 
 if __name__ == "__main__":
     load_dotenv()
@@ -109,13 +114,10 @@ if __name__ == "__main__":
         msg = download_image("comic.jpg")
         upload_url = get_upload_url(access_token, group_id)
 
-        uploaded_photo_response = upload_photo(access_token, group_id, "comic.jpg", upload_url)
-        photo = uploaded_photo_response["photo"]
-        photo_server = uploaded_photo_response["server"]
-        photo_hash = uploaded_photo_response["hash"]
+        photo, photo_server, photo_hash = upload_photo(access_token, group_id, "comic.jpg", upload_url)
 
-        saved_photo_response = save_photo(access_token, group_id, photo, photo_server, photo_hash)
-        attachments = f"photo{saved_photo_response['response'][0]['owner_id']}_{saved_photo_response['response'][0]['id']}"
+        photo_owner_id, photo_id = save_photo(access_token, group_id, photo, photo_server, photo_hash)
+        attachments = f"photo{photo_owner_id}_{photo_id}"
 
         post_photo(access_token, group_id, attachments, msg)
     except requests.exceptions.HTTPError:
