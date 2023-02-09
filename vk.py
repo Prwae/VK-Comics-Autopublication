@@ -111,10 +111,10 @@ if __name__ == "__main__":
 
         uploaded_photo_response = upload_photo(access_token, group_id, "comic.jpg", upload_url)
         photo = uploaded_photo_response["photo"]
-        server = uploaded_photo_response["server"]
-        hash = uploaded_photo_response["hash"]
+        photo_server = uploaded_photo_response["server"]
+        photo_hash = uploaded_photo_response["hash"]
 
-        saved_photo_response = save_photo(access_token, group_id, photo, server, hash)
+        saved_photo_response = save_photo(access_token, group_id, photo, photo_server, photo_hash)
         attachments = f"photo{saved_photo_response['response'][0]['owner_id']}_{saved_photo_response['response'][0]['id']}"
 
         post_photo(access_token, group_id, attachments, msg)
