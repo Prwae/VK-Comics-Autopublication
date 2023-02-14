@@ -6,6 +6,11 @@ import requests
 from dotenv import load_dotenv
 
 
+def check_vk_response(response):
+    if response.get("error"):
+        raise requests.exceptions.HTTPError
+
+
 def download_image(path, params=None):
     url = "https://xkcd.com/info.0.json"
 
@@ -41,6 +46,7 @@ def get_upload_url(access_token, group_id):
     url = "https://api.vk.com/method/photos.getWallUploadServer"
 
     response = requests.post(url, params=payload)
+    check_vk_response(response.json())
     response.raise_for_status()
 
     return response.json()["response"]["upload_url"]
@@ -56,8 +62,8 @@ def upload_photo(access_token, group_id, path, upload_url):
 
     with open(path, 'rb') as file:
         payload["photo"] = file
-
         response = requests.post(upload_url, files=payload)
+    check_vk_response(response.json())
     response.raise_for_status()
 
     uploaded_photo_response = response.json()
@@ -80,6 +86,7 @@ def save_photo(access_token, group_id, photo, photo_server, photo_hash):
     url = "https://api.vk.com/method/photos.saveWallPhoto"
 
     response = requests.post(url, data=payload)
+    check_vk_response(response.json())
     response.raise_for_status()
 
     saved_photo_response = response.json()
