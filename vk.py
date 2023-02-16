@@ -46,10 +46,11 @@ def get_upload_url(access_token, group_id):
     url = "https://api.vk.com/method/photos.getWallUploadServer"
 
     response = requests.post(url, params=payload)
-    check_vk_response(response.json())
+    response_content = response.json()
+    check_vk_response(response_content)
     response.raise_for_status()
 
-    return response.json()["response"]["upload_url"]
+    return response_content["response"]["upload_url"]
 
 
 def upload_photo(access_token, group_id, path, upload_url):
@@ -63,13 +64,13 @@ def upload_photo(access_token, group_id, path, upload_url):
     with open(path, 'rb') as file:
         payload["photo"] = file
         response = requests.post(upload_url, files=payload)
-    check_vk_response(response.json())
+    response_content = response.json()
+    check_vk_response(response_content)
     response.raise_for_status()
 
-    uploaded_photo_response = response.json()
-    photo = uploaded_photo_response["photo"]
-    photo_server = uploaded_photo_response["server"]
-    photo_hash = uploaded_photo_response["hash"]
+    photo = response_content["photo"]
+    photo_server = response_content["server"]
+    photo_hash = response_content["hash"]
     return photo, photo_server, photo_hash
 
 
@@ -86,12 +87,12 @@ def save_photo(access_token, group_id, photo, photo_server, photo_hash):
     url = "https://api.vk.com/method/photos.saveWallPhoto"
 
     response = requests.post(url, data=payload)
-    check_vk_response(response.json())
+    response_content = response.json()
+    check_vk_response(response_content)
     response.raise_for_status()
 
-    saved_photo_response = response.json()
-    photo_owner_id = saved_photo_response['response'][0]['owner_id']
-    photo_id = saved_photo_response['response'][0]['id']
+    photo_owner_id = response_content['response'][0]['owner_id']
+    photo_id = response_content['response'][0]['id']
     return photo_owner_id, photo_id
 
 
@@ -109,6 +110,8 @@ def post_photo(access_token, group_id, attachments, message="----"):
     url = "https://api.vk.com/method/wall.post"
 
     response = requests.post(url, params=payload)
+    response_content = response.json()
+    check_vk_response(response_content)
     response.raise_for_status()
 
 
