@@ -46,9 +46,9 @@ def get_upload_url(access_token, group_id):
     url = "https://api.vk.com/method/photos.getWallUploadServer"
 
     response = requests.post(url, params=payload)
+    response.raise_for_status()
     response_content = response.json()
     check_vk_response(response_content)
-    response.raise_for_status()
 
     return response_content["response"]["upload_url"]
 
@@ -64,9 +64,9 @@ def upload_photo(access_token, group_id, path, upload_url):
     with open(path, 'rb') as file:
         payload["photo"] = file
         response = requests.post(upload_url, files=payload)
+    response.raise_for_status()
     response_content = response.json()
     check_vk_response(response_content)
-    response.raise_for_status()
 
     photo = response_content["photo"]
     photo_server = response_content["server"]
@@ -87,9 +87,9 @@ def save_photo(access_token, group_id, photo, photo_server, photo_hash):
     url = "https://api.vk.com/method/photos.saveWallPhoto"
 
     response = requests.post(url, data=payload)
+    response.raise_for_status()
     response_content = response.json()
     check_vk_response(response_content)
-    response.raise_for_status()
 
     photo_owner_id = response_content['response'][0]['owner_id']
     photo_id = response_content['response'][0]['id']
@@ -110,9 +110,9 @@ def post_photo(access_token, group_id, attachments, message="----"):
     url = "https://api.vk.com/method/wall.post"
 
     response = requests.post(url, params=payload)
+    response.raise_for_status()
     response_content = response.json()
     check_vk_response(response_content)
-    response.raise_for_status()
 
 
 if __name__ == "__main__":
